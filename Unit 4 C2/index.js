@@ -1,95 +1,121 @@
 const express = require("express");
+
 const mongoose = require("mongoose");
 
+
 const app = express();
-const connect =()=>{
-    mongoose.connect(
-        "mongodb://127.0.0.1:27017/test"
-    );
+const connect = ()=>{
+    return("mongodb://127.0.0.1:27017/test");
 }
-  
-const userSchema = mongoose.Schema({
-    firstName: {type:String, required:true},
-    middleName: {type:String, required:false},
-    lastName: {type:String, required:true},
-    age: {type:Number, required:true},
-    email: {type:String, required:true},
-    address: {type:String, required:true},
-    gender : {type:String, required:false, default:"Female"},
-    type: {type:String, required:true},
 
-},
-{
- timestamps: true,
- });
 
- const User = mongoose.model("users",userSchema);
+const userSchema = new mongoose.Schema({
+    firstName: {type: String , required: true},
+    middleName: {type: String,required: false},
+    lastName: {type: String, required: true},
+    age: {type: Number, required: true},
+    email: {type: String , required: true},
+    address: {type: String, required: true},
+    gender: {type: String, required: false},
+    type: {type: String, required: false}, 
+    
+},{
+versionKey: false,
+timestamps: true,
+});
 
-   const branchSchema = mongoose.Schema({
-       branchName: {type:String, required:true},
-       address: {type:String, required:true},
-       IFSC: {type:String, required:true},
-       MICR: {type:String, required:true},
-       userId:{type:String, required:true},
+const User = mongoose.model("user",userSchema);
 
-   },
-   {
-       timestamps:true,
-   });
 
-   
+const branchSchema = new mongoose.Schema({
+name: {type: String , required: true},
+address: {type: String , required: true},
+IFSC : {type: String , required: true},
+MICR : {type: Number, required: true},
 
-   const Branch = mongoose.model("branch",branchSchema);
 
-    const savingSchema = mongoose.Schema({
-        accountNumber: { type:Number, required:true },
-        balance: { type:Number, required:true },
-        interestRate: { type:Number, required:true },
-      
-    },
-    {
-        timestamps:true,
-    })
+},{
+   versionKey: false,
+   timestamps: true,
+})
 
-    const Saving = mongoose.model("saving",savingSchema);
+const Branch = mongoose.model("branch",branchSchema);
 
 
 
-    const fixSchema = mongoose.Schema({
-        savingId: {type:String, required:true},
-        startDate: {type:String, required:true},
-    },
-    {
-        timestamps:true,
-    })
-    const Fix = mongoose.model("fix",fixSchema)
- 
-  app.get("/user", async(req,res)=>{
-      try {
-          const users = await User.find().populate({
-              path:
-          }).lean().exec();
-          return res.status(200).send({users:users})
-      } catch (error) {
-        return res.status(500).send({message:error.message})
-      }
-  })
 
- app.post("/saving", async(req,res)=>{
-     try {
-         const 
-     } catch (error) {
-         
-     }
- })
 
- app.listen(5000, async (req,res)=>{
-    try {
-       
-     await connect();
 
-    } catch (error) {
-        console.log(error)
+const masterSchema = new mongoose.Schema({
+    balance: {type: String, required: true},
+},{
+    versionKey: false,
+    timestamps: true,
+});
+const Master = mongoose.model("master",masterSchema);
+
+
+const savingSchema = new mongoose.Schema({
+    accountNumber: {type: Number , required: true,unique: true},
+    balance: {type: Number, required: true},
+    interestRate:{type:Number, required: true},
+
+},{
+    versionKey: false,
+    timestamps: true,
+});
+const Saving = mongoose.model("saving",savingSchema);
+
+
+const fixedSchema =  new mongoose.Schema({
+    accountNumber: {type: Number , required: true},
+    balance: {type: Number, required: true},
+    interestRate:{type:Number, required: true},
+    startDate: {type: String, required: true},
+    maturityDate: {type: String, required: true},
+
+},{
+    versionKey: false,
+    timestamps: true,
+});
+const Fixed = mongoose.model("fixed",fixedSchema);
+
+
+app.get("/master",async(req,res)=>{
+try{
+const master = await Master.find().leaan().exec();
+return res.status(200).send(master);``
+}catch(err){
+    return res
+    .status(500)
+.send({message:message.err});
+}
+})
+
+
+app.get("/saving",async(req,res)=>{
+    try{
+    const saving = await Saving.create(req.body);
+    return res.status(200).send(saving                                                                                                                                                                                                              );``
+    }catch(err){
+        return res
+        .status(500)
+        .send({message:message.err});
     }
-    console.log("listen to the port 5000");
- })
+    })
+
+
+
+
+
+
+
+app.listen(5000,async()=>{
+    try{
+       await connect();
+    }catch(err){
+    console.log('err:', err);
+
+    }
+console.log("listening to port 5000");
+});
