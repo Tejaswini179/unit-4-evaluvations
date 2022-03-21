@@ -2,7 +2,7 @@
 const mongoose= require("mongoose");
 
 const publicationSchema = new mongoose.Schema({
-    name:{type:Number, require:true,default:0},
+    name:{type:String, require:true,default:0},
 },
 {
     timestamps:true
