@@ -7,7 +7,9 @@
 
  const router  = express.Router();
 
- router.get("",async(req,res)=>{
+ const aut = require("../middleweare/authentication")
+
+ router.get("",aut, async(req,res)=>{
 
     try {
         
